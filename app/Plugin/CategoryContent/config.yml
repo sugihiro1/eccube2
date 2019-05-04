@@ -1,0 +1,5 @@
+name: カテゴリコンテンツプラグイン
+code: CategoryContent
+version: 1.0.0
+orm.path:
+    - /Resource/doctrine

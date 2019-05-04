@@ -1,0 +1,66 @@
+Plugin\AffiliatesPoint\Entity\PointHistory:
+    type: entity
+    table: plg_affiliates_point_history
+    repositoryClass: Plugin\AffiliatesPoint\Repository\PointHistoryRepository
+    id:
+        id:
+            type: bigint
+            length: 20
+            nullable: false
+            options:
+                unsigned: true
+            id: true
+            column: id
+            generator:
+                strategy: AUTO
+    fields:
+        my_id:
+            type: bigint
+            length: 11
+            nullable: true
+        my_type:
+            type: string
+            length: 255
+            nullable: true
+        from_user_name:
+            type: string
+            length: 255
+            nullable: true
+        from_user_id:
+            type: bigint
+            length: 11
+            nullable: true
+        order_id:
+            type: bigint
+            length: 11
+        order_amount:
+            type: decimal
+            precision: 16
+            scale: 8
+            options:
+                default: 0            
+        point_amount:
+            type: decimal
+            precision: 16
+            scale: 8
+            options:
+                default: 0            
+        point_rate:
+            type: decimal
+            precision: 16
+            scale: 8
+            options:
+                default: 0
+        point_get_date:
+            type: datetime
+        point_cancel_date:
+            type: datetime
+        point_status:
+            type: string
+            length: 255
+            nullable: true
+        created_date:
+            type: datetime
+        updated_date:
+            type: datetime
+    lifecycleCallbacks: {  }

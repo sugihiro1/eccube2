@@ -1,0 +1,43 @@
+{% extends 'default_frame.twig' %}
+
+{% block main %}
+            <h2 class="title">{{ title|raw }}</h2>
+                {% if error.payment is not empty %}
+                    <div class="message">
+                        <p class="errormsg bg-danger">
+                            <svg class="cb cb-warning">
+                            <use xlink:href="#cb-warning"></use>
+                            </svg>{{ error.payment|raw }}
+                        </p>
+                    </div>
+                {% endif %}
+            <div class="cryptomall-payment-inner">
+                <div class="dl_table" id="payment_form_body" style="width:100%">
+
+                {# /app/config/eccube/path.yml にダッシュボードURLを定義 #}
+                <style>
+                  /* cryptomall payment */
+                  #payment_form_body iframe {
+                    height:600px;
+                  }
+                  @media(max-width:768px){
+                    #payment_form_body iframe {
+                      height:900px;
+                    }
+                  }
+                </style>
+                <iframe src="{{ app.config.dash_board_urlpath }}/invoices/{{ currency }}?order_id={{ orderNumber }}&amount={{ amount }}" width="100%"  frameborder="0" scrolling="no" marginwidth="0" marginheight="0">エラーが発生しております。support@crypto-mall.orgまでご連絡ください。</iframe>
+
+                </div>
+                <div class="row no-padding"">
+                     <div class="col-sm-offset-2 col-sm-4">
+                        <p style="margin: 4em 0 4em;"><a href="{{ path('cm_payment_back') }}" class="btn btn-info btn-block">戻る</a></p>
+                    </div>
+                    <form name="formCf" id="formCf" method="post" action="{{ actionurl }}">
+                    <div class="col-sm-4">
+                        <p style="margin: 4em 0 2em;"><button type="submit" class="btn btn-primary btn-block">お支払いが完了したらコチラをクリック！<br>ご注文完了ページへ</button></p>
+                    </div>
+                    </form>
+                </div>
+            </div>
+{% endblock %}

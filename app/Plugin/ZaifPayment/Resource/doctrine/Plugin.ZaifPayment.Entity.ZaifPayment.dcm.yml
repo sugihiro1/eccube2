@@ -1,0 +1,18 @@
+Plugin\ZaifPayment\Entity\ZaifPayment:
+    type: entity
+    table: plg_zaif_payment
+    repositoryClass: Plugin\ZaifPayment\Repository\ZaifPaymentRepository
+    id:
+        mainkey:
+            type: string
+            nullable: false
+            column: mainkey
+        subkey:
+            type: string
+            nullable: false
+            column: subkey
+    fields:
+        value:
+            type: text
+            nullable: false
+    lifecycleCallbacks: { }

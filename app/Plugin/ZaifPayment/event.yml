@@ -1,0 +1,12 @@
+eccube.event.render.shopping.before:
+    - [onRenderZaifPaymentShoppingBefore, NORMAL]
+eccube.event.render.shopping_complete.before:
+    - [onRenderZaifPaymentShoppingCompleteBefore, NORMAL]
+eccube.event.controller.shopping_confirm.before:
+    - [onControllerZaifPaymentShoppingConfirmBefore, NORMAL]
+eccube.event.render.admin_order_edit.before:
+    - [onAdminOrderEditZaifPaymentInitialize, NORMAL]
+mail.order:
+    - [onMail, NORMAL]
+mail.admin.order:
+    - [onMail, NORMAL]

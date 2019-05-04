@@ -1,0 +1,8 @@
+name: Zaif決済プラグイン
+event: ZaifPaymentEvent
+code: ZaifPayment
+version: 1.0.0
+service:
+  - ZaifPaymentServiceProvider
+orm.path:
+  - /Resource/doctrine

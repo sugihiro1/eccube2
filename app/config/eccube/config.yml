@@ -1,0 +1,13 @@
+auth_magic: C4PXO8DXsa6FPHWlZUvfiCJgLKJB6OPr
+password_hash_algos: sha256
+shop_name: 'SUGI ショップ２'
+force_ssl: null
+admin_allow_host: {  }
+cookie_lifetime: 0
+cookie_name: eccube
+locale: ja
+timezone: Asia/Tokyo
+pageinrange: false
+trusted_proxies_connection_only: false
+trusted_proxies: {  }
+eccube_install: 1

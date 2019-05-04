@@ -1,0 +1,48 @@
+{% extends 'default_frame.twig' %}
+
+{% block title %}Zaif Payment設定画面{% endblock %}
+{% block sub_title %}{% endblock %}
+
+{% form_theme form 'Form/bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form class="form-horizontal" method="post" action="{{ url('plugin_ZaifPayment_config') }}">
+                {{ form_widget(form._token) }}
+                <div class="form-group {% if form.apikey.vars.errors|length %} has-error {% endif %}">
+                    <label class="col-sm-4 control-label">Zaif API Key <span class="text-danger">*</span></label>
+                    <div class="col-sm-8">
+                        {{ form_widget(form.apikey) }}
+                        {{ form_errors(form.apikey) }}
+                    </div>
+                </div>
+                <div class="form-group {% if form.apisecret.vars.errors|length %} has-error {% endif %}">
+                    <label class="col-sm-4 control-label">Zaif API Secret <span class="text-danger">*</span></label>
+                    <div class="col-sm-8">
+                        {{ form_widget(form.apisecret) }}
+                        {{ form_errors(form.apisecret) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-6">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">登録</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form class="form-horizontal" method="post" action="{{ url('plugin_ZaifPayment_config') }}">
+                <input type="hidden" name='updateCurrencies' value='1' />
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-6">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">対応通貨更新</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock main %}
