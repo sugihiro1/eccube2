@@ -75,7 +75,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                 {% if Cart.CartItems|length > 0 %}
                 <form name="form" id="form_cart" method="post" action="{{ url('cart') }}">
                     <p id="cart_item__info" class="message">
-                        商品の合計金額は「<strong>{{ Cart.total_price|price }}</strong>」です。
+                        商品の合計金額は「<strong>{{ (Cart.total_price/ rate) |number_format(5, '.', ',') }} BTC</strong>」です。
                         {% if BaseInfo.delivery_free_amount and BaseInfo.delivery_free_quantity %}
                             <br />
                             {% if is_delivery_free %}
@@ -138,8 +138,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                                     <br>{{ ProductClass.ClassCategory2.ClassName }}：{{ ProductClass.ClassCategory2 }}
                                                 {% endif %}
                                             </dd>
-                                            <dd id="cart_item_list__item_price" class="item_price">￥{{ CartItem.price|number_format }}</dd>
-                                            <dd id="cart_item_list__item_subtotal" class="item_subtotal">小計：￥{{ CartItem.total_price|number_format }}</dd>
+                                            <dl>
+                                            
+                                            <!--
+                                            <dd id="cart_item_list__item_price" class="item_price">{{ (CartItem.price / rate) |number_format(5, '.', ',') }} BTC</dd>
+                                            -->
+                                            
+                                            {% for rate in rates %}  
+			 								{% set tokenRate = rate['name'] %}
+ 　　　　											<dd id="cart_item_list__item_price" class="item_price">{{ (CartItem.price / tokenRate) |number_format(5, '.', ',') }} {{ rate['token'] }} </dd>
+ 　　　　									{% endfor %}
+ 　　　　									 　　　　									
+ 　　　　									<!--
+ 　　　　									<dd id="cart_item_list__item_subtotal" class="item_subtotal">小計：{{ (CartItem.total_price / rate) |number_format(5, '.', ',') }} BTC</dd>
+ 　　　　									-->
+
+                                            {% for rate in rates %}  
+			 								{% set tokenRate = rate['name'] %}
+                                            <dd id="cart_item_list__item_subtotal" class="item_subtotal">小計：{{ (CartItem.total_price / tokenRate) |number_format(5, '.', ',') }} {{ rate['token'] }} </dd>
+                                            {% endfor %}
+                                            	
                                         </dl>
                                     </div>
                                     <div id="cart_item_list__quantity" class="item_quantity td">
@@ -157,7 +175,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                                             </li>
                                         </ul>
                                     </div>
-                                    <div id="cart_item_list__subtotal" class="item_subtotal td">￥{{ CartItem.total_price|number_format }}</div>
+                                    
+                                 
+                                  <div id="cart_item_list__subtotal" class="item_subtotal td">
+                                    <dt>
+                                    <!--
+                                    {{ (CartItem.total_price / rate) |number_format(5, '.', ',') }} BTC
+                                    -->
+                                    
+                                     {% for rate in rates %}  
+			 						 {% set tokenRate = rate['name'] %}
+			 						 
+                                     <dd>{{ (CartItem.total_price / tokenRate) |number_format(5, '.', ',') }} {{ rate['token'] }}</dd>
+                                     {% endfor %} 
+                                     
+                                    </dt>
+                                  </div>
+                                                                      			
                                 </div><!--/item_box-->
                             {% endfor %}
 
@@ -166,11 +200,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
                     <div class="total_box">
                         <dl id="total_box__total_price" class="total_price">
                             <dt>合計：</dt>
-                            <dd class="text-primary">￥{{ Cart.total_price|number_format }}</dd>
+                            
+                            <!--
+                            <dd class="text-primary">{{ (Cart.total_price / rate) |number_format(5, '.', ',') }}<span> BTC</span></dd> 
+                            -->
+                            
+                            {% for rate in rates %}  
+			 				{% set tokenRate = rate['name'] %}
+ 							<dd class="text-primary">{{ (Cart.total_price / tokenRate) |number_format(5, '.', ',') }}<span> {{ rate['token'] }}</span></dd> 
+                            {% endfor %} 
+                            
                         </dl>
+                        	
                         <div id="total_box__user_action_menu" class="btn_group">
 
-                            <p id="total_box__next_button" >
+                            <p id="total_box__next_button" style="margin: 3em 0;">
                                 <a href="{{ path('cart_buystep') }}" class="btn btn-primary btn-block">レジに進む</a>
                             </p>
                             <p id="total_box__top_button">

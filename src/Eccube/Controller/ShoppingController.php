@@ -104,6 +104,11 @@ class ShoppingController extends AbstractController
                 }
             } else {
                 $Customer = $app->user();
+                $addressCurrNum = count($app->user()->getCustomerAddresses());
+                if ($addressCurrNum == 0) {
+                    log_info('お届け先住所が存在しないためマイページ画面にリダイレクト');
+                    return $app->redirect($app->url('mypage_change'));
+                }
             }
 
             try {
@@ -163,9 +168,16 @@ class ShoppingController extends AbstractController
             $app['session']->set($this->sessionMultipleKey, 'multiple');
         }
 
+        $arrRate = $app['eccube.repository.master.rate']->get();
+        $rate = $arrRate['name'];
+
+        $rates = $app['eccube.repository.master.rate']->getMultiRates();
+        
         return $app->render('Shopping/index.twig', array(
             'form' => $form->createView(),
             'Order' => $Order,
+            'rate' => $rate,
+            'rates' => $rates,
         ));
     }
 
@@ -232,7 +244,6 @@ class ShoppingController extends AbstractController
                 log_info('購入処理完了', array($Order->getId()));
 
             } catch (ShoppingException $e) {
-
                 log_error('購入エラー', array($e->getMessage()));
 
                 $em->getConnection()->rollback();
@@ -242,7 +253,6 @@ class ShoppingController extends AbstractController
 
                 return $app->redirect($app->url('shopping_error'));
             } catch (\Exception $e) {
-
                 log_error('予期しないエラー', array($e->getMessage()));
 
                 $em->getConnection()->rollback();
@@ -297,9 +307,13 @@ class ShoppingController extends AbstractController
 
         log_info('購入チェックエラー', array($Order->getId()));
 
+        $arrRate = $app['eccube.repository.master.rate']->get();
+        $rate = $arrRate['name'];
+
         return $app->render('Shopping/index.twig', array(
             'form' => $form->createView(),
             'Order' => $Order,
+            'rate' => $rate,
         ));
     }
 
@@ -800,7 +814,7 @@ class ShoppingController extends AbstractController
             // 合計金額の再計算
             $app['eccube.service.shopping']->getAmount($Order);
 
-            // 配送先を更新 
+            // 配送先を更新
             $app['orm.em']->flush();
 
             $event = new EventArgs(

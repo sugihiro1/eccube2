@@ -188,6 +188,11 @@ class ProductController
 
         $Category = $searchForm->get('category_id')->getData();
 
+        $arrRate = $app['eccube.repository.master.rate']->get();
+        $rate = $arrRate['name'];
+
+        $rates = $app['eccube.repository.master.rate']->getMultiRates();
+
         return $app->render('Product/list.twig', array(
             'subtitle' => $this->getPageTitle($searchData),
             'pagination' => $pagination,
@@ -196,6 +201,8 @@ class ProductController
             'order_by_form' => $orderByForm->createView(),
             'forms' => $forms,
             'Category' => $Category,
+            'rate' => $rate,
+            'rates' => $rates,
         ));
     }
 
@@ -312,12 +319,19 @@ class ProductController
             $is_favorite = $app['eccube.repository.customer_favorite_product']->isFavorite($Customer, $Product);
         }
 
+        $arrRate = $app['eccube.repository.master.rate']->get();
+        $rate = $arrRate['name'];
+
+        $rates = $app['eccube.repository.master.rate']->getMultiRates();
+
         return $app->render('Product/detail.twig', array(
             'title' => $this->title,
             'subtitle' => $Product->getName(),
             'form' => $form->createView(),
             'Product' => $Product,
             'is_favorite' => $is_favorite,
+            'rate' => $rate,
+            'rates'=> $rates,
         ));
     }
 

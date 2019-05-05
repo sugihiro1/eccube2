@@ -1,6 +1,0 @@
-name: AffiliatesPoint
-code: AffiliatesPoint
-version: 1.0.0
-orm.path:
-    - /Resource/doctrine
-event: AffiliatesPointEvent

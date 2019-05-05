@@ -1,0 +1,22 @@
+Eccube\Entity\Master\Rate:
+    type: entity
+    table: mtb_rate
+    repositoryClass: Eccube\Repository\Master\RateRepository
+    id:
+        id:
+            type: smallint
+            nullable: false
+            unsigned: false
+            id: true
+    fields:
+        name:
+            type: text
+            nullable: true
+        token:
+            type: string
+            length: 10
+        rank:
+            type: smallint
+            nullable: false
+            unsigned: false
+    lifecycleCallbacks: {  }

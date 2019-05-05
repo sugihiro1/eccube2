@@ -86,6 +86,11 @@ class CartController extends AbstractController
             return $event->getResponse();
         }
 
+        $arrRate = $app['eccube.repository.master.rate']->get();
+        $rate = $arrRate['name'];
+
+        $rates = $app['eccube.repository.master.rate']->getMultiRates();
+
         return $app->render(
             'Cart/index.twig',
             array(
@@ -93,6 +98,8 @@ class CartController extends AbstractController
                 'least' => $least,
                 'quantity' => $quantity,
                 'is_delivery_free' => $isDeliveryFree,
+                'rate' => $rate,
+                'rates' => $rates,
             )
         );
     }

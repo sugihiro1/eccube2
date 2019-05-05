@@ -16,7 +16,7 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-
+echo "===== Running doctrine.php =====\n";
 use Symfony\Component\Console\Helper\HelperSet;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 

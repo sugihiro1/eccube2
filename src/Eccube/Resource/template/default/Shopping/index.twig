@@ -25,6 +25,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 <script>
 $(function() {
 
+    // 2018/12/21 [XMALL] button disabled
+    $('#shopping_payment_11').prop('disabled', true);
+
     $('.delivery').on('change', function() {
         $('#shopping-form').attr('action', '{{ url("shopping_delivery") }}').submit();
         return false;
@@ -199,8 +202,18 @@ $(function() {
                                                 <br>{{ orderDetail.productClass.classCategory2.className }}：{{ orderDetail.productClass.classCategory2 }}
                                             {% endif %}
                                         </dd>
-                                        <dd id="cart_box_list__price--{{ loop.index }}" class="item_price">{{ orderDetail.priceIncTax|price }} × {{ orderDetail.quantity|number_format }}</dd>
-                                        <dd id="cart_box_list__subtotal--{{ loop.index }}" class="item_subtotal">小計：{{ orderDetail.totalPrice|price }}</dd>
+                                        <!--
+                                        <dd id="cart_box_list__price--{{ loop.index }}" class="item_price">{{ (orderDetail.priceIncTax / rate) |number_format(5, '.', ',') }} BTC × {{ orderDetail.quantity|number_format }}</dd>
+                                        	                                        <dd id="cart_box_list__subtotal--{{ loop.index }}" class="item_subtotal">小計：{{ (orderDetail.totalPrice / rate)|number_format(5, '.', ',') }} BTC</dd>
+                                        -->
+ 
+                                        {% for rate in rates %}  
+			 							{% set tokenRate = rate['name'] %}
+                                        <dt><dd id="cart_box_list__price--{{ loop.index }}" class="item_price">{{ (orderDetail.priceIncTax / tokenRate) |number_format(5, '.', ',') }} {{ rate['token'] }}  × {{ orderDetail.quantity|number_format }}</dd>
+                                        	                                        <dd id="cart_box_list__subtotal--{{ loop.index }}" class="item_subtotal">小計：{{ (orderDetail.totalPrice / tokenRate)|number_format(5, '.', ',') }} {{ rate['token'] }}</dd></dt>
+ 　　　　								{% endfor %}	
+                                        	
+                                        	
                                     </dl>
                                 </div>
                             </div><!--/item_box-->
@@ -257,9 +270,20 @@ $(function() {
                                                         <br>{{ shipmentItem.productClass.classCategory2.className }}：{{ shipmentItem.productClass.classCategory2 }}
                                                     {% endif %}
                                                 </dd>
-                                                <dd id="shipping_box__price--{{ idx }}_{{ shipmentItem.id }}" class="item_price">{{ shipmentItem.priceIncTax|price }} × {{ shipmentItem.quantity|number_format }}</dd>
-                                                <dd id="shipping_box__subtotal--{{ idx }}_{{ shipmentItem.id }}" class="item_subtotal">小計：{{ shipmentItem.totalPrice|price }}</dd>
-                                            </dl>
+                                                <!--
+                                                <dd id="shipping_box__price--{{ idx }}_{{ shipmentItem.id }}" class="item_price">{{ (shipmentItem.priceIncTax / rate)|number_format(5, '.', ',') }} BTC × {{ shipmentItem.quantity|number_format }}</dd>
+                                                <dd id="shipping_box__subtotal--{{ idx }}_{{ shipmentItem.id }}" class="item_subtotal">小計：{{ (shipmentItem.totalPrice / rate)|number_format(5, '.', ',') }} BTC</dd>
+                                           -->
+                                            	
+                                        {% for rate in rates %}  
+			 							{% set tokenRate = rate['name'] %}
+                                            <dt><dd id="shipping_box__price--{{ idx }}_{{ shipmentItem.id }}" class="item_price">{{ (shipmentItem.priceIncTax / tokenRate)|number_format(5, '.', ',') }} {{ rate['token'] }} × {{ shipmentItem.quantity|number_format }}</dd>
+                                            <dd id="shipping_box__subtotal--{{ idx }}_{{ shipmentItem.id }}" class="item_subtotal">小計：{{ (shipmentItem.totalPrice / tokenRate)|number_format(5, '.', ',') }} {{ rate['token'] }}</dd></dt>
+			 							{% endfor %}
+                                            	
+                                         </dl>
+                                            	
+                                            	
                                         </div>
                                     </div><!--/item_box-->
                                 {% endfor %}
@@ -269,18 +293,20 @@ $(function() {
                             <p id="shopping_confirm_box__shipping_address_detail--{{ idx }}" class="address">{{ shipping.name01 }} {{ shipping.name02 }} 様<br>
                             〒{{ shipping.zip01 }}-{{ shipping.zip02 }} {{ shipping.pref }}{{ shipping.addr01 }}{{ shipping.addr02 }}<br>
                             {{ shipping.tel01 }}-{{ shipping.tel02 }}-{{ shipping.tel03 }}</p>
-                            <div id="shopping_confirm_box__shipping_delivery--{{ idx }}" class="form-inline form-group">
+
+                            <div id="shopping_confirm_box__shipping_delivery--{{ idx }}" class="form-inline form-group" style="display:none;">
                                 <label>配送方法</label>
                                 {{ form_widget(form.shippings[idx].delivery, {'attr': {'class': 'delivery'}}) }}
                                 {{ form_errors(form.shippings[idx].delivery) }}
                             </div>
 
-                            <div id="shopping_confirm_box__shipping_delivery_date_time--{{ idx }}" class="form-inline form-group">
+                            <div id="shopping_confirm_box__shipping_delivery_date_time--{{ idx }}" class="form-inline form-group" style="display:none;">
                                 <label>お届け日</label>
                                 {{ form_widget(form.shippings[idx].shippingDeliveryDate) }}<br class="sp">
                                 <label>お届け時間</label>
                                 {{ form_widget(form.shippings[idx].deliveryTime) }}
                             </div>
+
                             {% if is_granted('ROLE_USER') %}
                             <p id="shopping_confirm_box__edit_button--{{ idx }}" class="btn_edit"><a href="{{ url('shopping_shipping_change', {'id': shipping.id}) }}" class="btn btn-default btn-sm btn-shipping">変更</a></p>
                             {% else %}
@@ -331,24 +357,38 @@ $(function() {
                     <div id="summary_box__total_box" class="total_box">
                         <dl id="summary_box__subtotal">
                             <dt>小計</dt>
-                            <dd class="text-primary">{{ Order.subtotal|price }}</dd>
+                    
+                    		<!--
+                            <dd class="text-primary">{{ (Order.subtotal / rate)|number_format(5, '.', ',') }} BTC</dd>
+                            -->
+                    
+                            {% for rate in rates %}  
+			 				{% set tokenRate = rate['name'] %}  
+                           <dd class="text-primary">{{ (Order.subtotal / tokenRate)|number_format(5, '.', ',') }} {{ rate['token'] }}</dd>
+                            {% endfor %}
+                            
                         </dl>
-                        <dl id="summary_box__quantity_price">
-                            <dt>手数料</dt>
-                            <dd>{{ Order.charge|price }}</dd>
-                        </dl>
-                        <dl id="summary_box__shipping_price">
-                            <dt>送料</dt>
-                            <dd>{{ Order.deliveryFeeTotal|price }}</dd>
-                        </dl>
+                        	
                         {% if Order.discount > 0 %}
                         <dl id="summary_box__discount_price">
                             <dt>値引き</dt>
                             <dd>{{ (0 - Order.discount)|price}}</dd>
                         </dl>
                         {% endif %}
+                        
                         <div id="summary_box__result" class="total_amount">
-                            <p id="summary_box__total_amount" class="total_price">合計 <strong class="text-primary">{{ Order.total|price }}<span class="small">税込</span></strong></p>
+                        	
+                        	<!--
+                            <p id="summary_box__total_amount" class="total_price">合計 <strong class="text-primary">{{ (Order.total / rate)|number_format(5, '.', ',') }}<span class="small"> BTC</span></strong></p>
+                            -->
+                            
+                            <p id="summary_box__total_amount" class="total_price">合計
+                            {% for rate in rates %}  
+			 				{% set tokenRate = rate['name'] %}  
+							 <p id="summary_box__total_amount" class="total_price">   <strong class="text-primary">{{ (Order.total / tokenRate)|number_format(5, '.', ',') }}<span class="small"> {{ rate['token'] }} </span></strong></p>
+                            {% endfor %}
+                            </p>
+                            
                             <p id="summary_box__confirm_button"><button id="order-button" type="submit" class="btn btn-primary btn-block prevention-btn prevention-mask">注文する</button></p>
                         </div>
                     </div>
